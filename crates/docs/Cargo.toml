@@ -1,6 +1,7 @@
 [package]
-name = "libssg"
+name = "docs"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+docs_core = { path = "../docs_core" }

@@ -3,5 +3,12 @@
 version = 4
 
 [[package]]
-name = "libssg"
+name = "docs"
+version = "0.1.0"
+dependencies = [
+ "docs_core",
+]
+
+[[package]]
+name = "docs_core"
 version = "0.1.0"
