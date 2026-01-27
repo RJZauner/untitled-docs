@@ -11,6 +11,9 @@ use std::path::Path;
 pub fn ast_from_file<P: AsRef<Path>>(file_path: P) -> Result<Mod, ParserError> {
     let path = file_path.as_ref();
 
+    // The "?" is fine here - ParserError implement the I/O error
+    // therefore this will result in the correct error being
+    // propogated.
     let file_contents = fs::read_to_string(path)?;
 
     return parse(&file_contents, Mode::Module, "<embedded>").map_err(|error| {
