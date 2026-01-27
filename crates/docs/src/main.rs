@@ -6,11 +6,15 @@ use std::error::Error;
 fn main() -> Result<(), Box<dyn Error>> {
     let file_path = PathBuf::from("./testing/main.py").display().to_string();
 
-    let result = read_file(&file_path)?;
+    let result = read_file(&file_path).map_err(|error| {
+        format!("Could not read file contents: {:?}", error)
+    })?;
     
-    generate_ast(&result);
+    let tree = generate_ast(&result).map_err(|error| {
+        format!("Tree could not be generated: {:?}", error)
+    })?;
 
-    println!("file contents: {:?}", result);
+    println!("AST: {:#?}", tree);
 
     Ok(())
 }
