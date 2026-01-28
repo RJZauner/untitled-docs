@@ -1,8 +1,12 @@
-//! # Core Processing Library
+//! # This crate is used to generate an abstract syntax tree
+//! based on Python source code.
 //!
-//! This module defines our core processing library for our docs generation project.
+//! ## Overview
+//! This module defines our core processing library for our
+//! documentation generation.
 
 pub mod error;
 pub mod parser;
 
-pub use crate::parser::ast_from_file;
+pub use crate::parser::parse_module;
+pub use crate::parser::read_file_contents;

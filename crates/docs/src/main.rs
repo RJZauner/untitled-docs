@@ -1,8 +1,12 @@
-use docs_core::ast_from_file;
+use docs_core::{parse_module, read_file_contents};
 use std::error::Error;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let tree = ast_from_file("./testing/main.py")?;
+    let content = read_file_contents("./testing/main.py")?;
+
+    let tree = parse_module(&content)?;
+
     println!("AST: {:#?}", tree);
+
     Ok(())
 }

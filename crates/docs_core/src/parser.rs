@@ -8,7 +8,11 @@ use rustpython_parser::{Mode, parse};
 use std::fs;
 use std::path::Path;
 
-pub fn ast_from_file<P: AsRef<Path>>(file_path: P) -> Result<Mod, ParserError> {
+/// Method for returning file contents
+///
+/// A convenience method that opens and return the file
+/// contents.
+pub fn read_file_contents<P: AsRef<Path>>(file_path: P) -> Result<String, ParserError> {
     let path = file_path.as_ref();
 
     // The "?" is fine here - ParserError implement the I/O error
@@ -16,7 +20,26 @@ pub fn ast_from_file<P: AsRef<Path>>(file_path: P) -> Result<Mod, ParserError> {
     // propogated.
     let file_contents = fs::read_to_string(path)?;
 
-    return parse(&file_contents, Mode::Module, "<embedded>").map_err(|error| {
+    // Wrap in "Ok()" to match Result return type.
+    Ok(file_contents)
+}
+
+/// Parse a single python file as a module
+///
+/// This is a convenience method for parsing
+/// files instead of entire modules.
+pub fn parse_module(source: &str) -> Result<Mod, ParserError> {
+    return parse(&source, Mode::Module, "<embedded>").map_err(|error| ParserError::ParseError {
+        message: error.to_string(),
+    });
+}
+
+/// Parse a python expression
+///
+/// A convenience method for parsing a python
+/// expression.
+pub fn parse_expression(source: &str) -> Result<Mod, ParserError> {
+    return parse(&source, Mode::Expression, "<embedded").map_err(|error| {
         ParserError::ParseError {
             message: error.to_string(),
         }
