@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title }}</title>
+</head>
+<body>
+    <h1>Class: </h1>
+    {% for class in page.classes %}
+    <h2>{{ class.name }}</h2>
+        {% for method in class.methods %}
+        <h3>{{ method.name }}</h3>
+        {% endfor %}
+    {% endfor %}
+</body>
+</html>

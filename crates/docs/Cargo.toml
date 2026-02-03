@@ -5,3 +5,5 @@ edition = "2024"
 
 [dependencies]
 docs_core = { path = "../docs_core" }
+tera = { workspace = true}
+serde = { workspace = true }

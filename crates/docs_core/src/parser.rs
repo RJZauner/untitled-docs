@@ -2,11 +2,78 @@
 //!
 //! This contains all of the methods that allow us to parse python files.
 
+use crate::docs::Class;
+use crate::docs::Method;
+use crate::docs::Page;
 use crate::error::ParserError;
 use rustpython_ast::Mod;
+use rustpython_ast::Stmt;
+use rustpython_ast::Visitor;
 use rustpython_parser::{Mode, parse};
+use serde::Serialize;
 use std::fs;
 use std::path::Path;
+
+#[derive(Debug, Serialize)]
+pub struct DocsPage {
+    pub page: Page,
+}
+
+/// DocsPage Constructor - pass it a name to
+/// initialise data struct
+impl DocsPage {
+    pub fn new(name: String) -> Self {
+        Self {
+            page: Page {
+                title: name,
+                description: None,
+                function: Vec::new(),
+                classes: Vec::new(),
+                variables: Vec::new(),
+            },
+        }
+    }
+
+    pub fn analyse(&mut self, ast: &Mod) {
+        if let Mod::Module(m) = ast {
+            for stmt in &m.body {
+                self.visit_stmt(stmt.clone())
+            }
+        }
+    }
+}
+
+impl Visitor for DocsPage {
+    fn visit_stmt(&mut self, stmt: Stmt) {
+        match stmt {
+            Stmt::ClassDef(class) => {
+                let mut cls = Class {
+                    name: class.name.to_string(),
+                    attributes: Vec::new(),
+                    methods: Vec::new(),
+                };
+
+                for stmt in &class.body {
+                    if let Stmt::FunctionDef(method) = stmt {
+                        let class_method = Method {
+                            name: method.name.to_string(),
+                            doc_string: None,
+                        };
+                        cls.methods.push(class_method);
+                    }
+                }
+                // add class to page struct
+                self.page.classes.push(cls);
+            }
+            Stmt::FunctionDef(function) => {
+                println!("Function name: {}", function.name.to_string());
+            }
+            _ => {
+                // run into nothing
+            }
+        }
+    }
+}
 
 /// Method for returning file contents
 ///
