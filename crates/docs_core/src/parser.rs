@@ -43,6 +43,8 @@ impl DocsPage {
     }
 }
 
+// TODO -> parse all information from example file - docstring & build func signature etc.
+
 impl Visitor for DocsPage {
     fn visit_stmt(&mut self, stmt: Stmt) {
         match stmt {
