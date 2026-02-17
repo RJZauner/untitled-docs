@@ -12,6 +12,7 @@ pub struct Page {
     pub classes: Vec<Class>,
     pub function: Vec<Method>,
     pub variables: Vec<Variable>,
+    pub doc_string: Option<String>,
 }
 
 #[derive(Debug, Serialize)]

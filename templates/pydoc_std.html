@@ -6,6 +6,7 @@
     <title>{{ page.title }}</title>
 </head>
 <body>
+    <h1>{{ page.doc_string }}</h1>
     {% for class in page.classes %}
     <h1>Class: {{ class.name }}</h1>
         {% for method in class.methods %}

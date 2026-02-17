@@ -31,6 +31,7 @@ impl DocsPage {
                 function: Vec::new(),
                 classes: Vec::new(),
                 variables: Vec::new(),
+                doc_string: None,
             },
         }
     }
@@ -70,8 +71,17 @@ impl Visitor for DocsPage {
                 // add class to page struct
                 self.page.classes.push(cls);
             }
+
+            // parse standalone python functions
             Stmt::FunctionDef(function) => {
                 println!("Function name: {}", function.name.to_string());
+            }
+            Stmt::Expr(pkg_docs) => {
+                if let Expr::Constant(docs) = &*pkg_docs.value {
+                    if let Some(pkg_str) = docs.value.as_str() {
+                        self.page.doc_string = Some(pkg_str.to_string());
+                    }
+                }
             }
             _ => {
                 // run into nothing
