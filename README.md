@@ -24,3 +24,8 @@ A PDoc-like basic parser for Python written in Rust. It is not intended as a ful
 - **Parser** - a project parser that takes in the project's directory, builds a Sitemap which is a struct that contains all of the PageData from the python source files and generates the final html files from this Sitemap struct. It returns the Sitemap struct to Site as well as the configured location of the generated html files.
 - **Server**: This handles the actual serving of the generated html files
 - **Site** - main struct for building site - passes data to other parts, handles configuration as well as errors.
+
+## Next Changes
+
+- Complete parsing engine - take in the python file and generate a complete example site from it - ensure templating works and adapt styling
+- Parse a complete directory with Sitemap struct

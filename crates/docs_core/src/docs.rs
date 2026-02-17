@@ -19,6 +19,7 @@ pub struct Class {
     pub name: String,
     pub attributes: Vec<Attribute>,
     pub methods: Vec<Method>,
+    pub doc_string: Option<String>,
 }
 
 #[derive(Debug, Serialize)]

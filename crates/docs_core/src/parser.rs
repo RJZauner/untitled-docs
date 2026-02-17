@@ -6,6 +6,7 @@ use crate::docs::Class;
 use crate::docs::Method;
 use crate::docs::Page;
 use crate::error::ParserError;
+use rustpython_ast::Expr;
 use rustpython_ast::Mod;
 use rustpython_ast::Stmt;
 use rustpython_ast::Visitor;
@@ -43,7 +44,8 @@ impl DocsPage {
     }
 }
 
-// TODO -> parse all information from example file - docstring & build func signature etc.
+// We first write a fn to return docstrings -> use this to get class docstring, file docstring and
+// method docstring
 
 impl Visitor for DocsPage {
     fn visit_stmt(&mut self, stmt: Stmt) {
@@ -53,13 +55,14 @@ impl Visitor for DocsPage {
                     name: class.name.to_string(),
                     attributes: Vec::new(),
                     methods: Vec::new(),
+                    doc_string: parse_docstring(&class.body),
                 };
 
                 for stmt in &class.body {
                     if let Stmt::FunctionDef(method) = stmt {
                         let class_method = Method {
                             name: method.name.to_string(),
-                            doc_string: None,
+                            doc_string: parse_docstring(&method.body),
                         };
                         cls.methods.push(class_method);
                     }
@@ -113,4 +116,20 @@ pub fn parse_expression(source: &str) -> Result<Mod, ParserError> {
             message: error.to_string(),
         }
     });
+}
+
+pub fn parse_docstring(body: &[Stmt]) -> Option<String> {
+    if body.is_empty() {
+        return None;
+    }
+
+    if let Stmt::Expr(expr_stmt) = &body[0] {
+        if let Expr::Constant(constant) = &*expr_stmt.value {
+            if let Some(s) = constant.value.as_str() {
+                return Some(s.to_string());
+            }
+        }
+    }
+
+    None
 }
